@@ -1,0 +1,6 @@
+figs
+.idea
+.vscode
+__pycache__
+wandb
+log
