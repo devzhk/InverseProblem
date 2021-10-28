@@ -5,6 +5,15 @@ This file will implement classic shadow that takes input rho, output rho tilde
 import numpy as np
 
 
+def inverse_channel(X):
+    '''
+    Args: 
+        X: square matrix
+    '''
+    return 3 * X - np.eye(X.shape[0])
+
+
+
 def classical_shadow_generation(rho):
     """
     Summary:
