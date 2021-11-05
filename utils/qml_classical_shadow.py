@@ -1,7 +1,6 @@
 import pennylane as qml
 import pennylane.numpy as np
-import matplotlib.pyplot as plt
-import time
+
 
 ##############################################################################
 # Code from https://github.com/PennyLaneAI/qml/blob/master/demonstrations/tutorial_classical_shadows.py
@@ -48,3 +47,67 @@ def calculate_classical_shadow(circuit_template, params, shadow_size, num_qubits
 
     # combine the computational basis outcomes and the sampled unitaries
     return (outcomes, unitary_ids)
+
+
+def snapshot_state(b_list, obs_list):
+    """
+    Helper function for `shadow_state_reconstruction` that reconstructs
+     a state from a single snapshot in a shadow.
+
+    Implements Eq. (S44) from https://arxiv.org/pdf/2002.08953.pdf
+
+    Args:
+        b_list (array): The list of classical outcomes for the snapshot.
+        obs_list (array): Indices for the applied Pauli measurement.
+
+    Returns:
+        Numpy array with the reconstructed snapshot.
+    """
+    num_qubits = len(b_list)
+
+    # computational basis states
+    zero_state = np.array([[1, 0], [0, 0]])
+    one_state = np.array([[0, 0], [0, 1]])
+
+    # local qubit unitaries
+    phase_z = np.array([[1, 0], [0, -1j]], dtype=complex)
+    hadamard = qml.Hadamard(0).matrix
+    identity = qml.Identity(0).matrix
+
+    # undo the rotations that were added implicitly to the circuit for the Pauli measurements
+    unitaries = [hadamard, hadamard @ phase_z, identity]
+
+    # reconstructing the snapshot state from local Pauli measurements
+    rho_snapshot = [1]
+    for i in range(num_qubits):
+        state = zero_state if b_list[i] == 1 else one_state
+        U = unitaries[int(obs_list[i])]
+
+        # applying Eq. (S44)
+        local_rho = 3 * (U.conj().T @ state @ U) - identity
+        rho_snapshot = np.kron(rho_snapshot, local_rho)
+
+    return rho_snapshot
+
+
+def shadow_state_reconstruction(shadow):
+    """
+    Reconstruct a state approximation as an average over all snapshots in the shadow.
+
+    Args:
+        shadow (tuple): A shadow tuple obtained from `calculate_classical_shadow`.
+
+    Returns:
+        Numpy array with the reconstructed quantum state.
+    """
+    num_snapshots, num_qubits = shadow[0].shape
+
+    # classical values
+    b_lists, obs_lists = shadow
+
+    # Averaging over snapshot states.
+    shadow_rho = np.zeros((2 ** num_qubits, 2 ** num_qubits), dtype=complex)
+    for i in range(num_snapshots):
+        shadow_rho += snapshot_state(b_lists[i], obs_lists[i])
+
+    return shadow_rho / num_snapshots
