@@ -4,3 +4,4 @@ figs
 __pycache__
 wandb
 log
+data
