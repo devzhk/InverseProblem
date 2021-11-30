@@ -22,7 +22,7 @@ t_a: 2088,
 Ds_c: 0.279, 
 Asigma: 1.011e-2
 
-![](docs/laplacian.png)
+![](docs/optiml1_map.png)
 
 ## MCMC
 
