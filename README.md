@@ -8,21 +8,20 @@
 ## Optimization method
 **Gaussian likelihood**
 Recovered parameters: 
-r: 9.53e-6, 
-t_a: 1740, 
-Ds_c: 0.34, 
-Asigma: 4.47e-3
+r: 8.017e-6, 
+t_a: 15178, 
+Ds_c: 0.374, 
+Asigma: 1.31e-3
 
-![](docs/optim_map.png)
 
 **Laplacian likelihood**
 Recovered parameters: 
 r: 1.2e-5, 
-t_a: 2088, 
+t_a: 20888, 
 Ds_c: 0.279, 
 Asigma: 1.011e-2
 
-![](docs/optiml1_map.png)
+![](docs/final_optim_pred.png)
 
 ## MCMC
 
