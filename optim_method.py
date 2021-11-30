@@ -1,9 +1,6 @@
 from tqdm import tqdm
-import h5py
 
 import numpy as np
-import pandas as pd
-
 import matplotlib.pyplot as plt
 
 import torch
@@ -22,7 +19,7 @@ if __name__ == '__main__':
 
     truth = torch.tensor(yearly_R, dtype=torch.float64)
     time_size = 50
-    num_epoch = 1500
+    num_epoch = 1800
 
     times = np.arange(1956, 2019)
     pred_R = int_R(yearly_Ds[:, :, -time_size:],
@@ -50,11 +47,13 @@ if __name__ == '__main__':
         )
     print('Approximated value of theta: r, t_a, Ds_c, Asigma')
     print((theta * scaler).detach().numpy())
-    line1, = plt.plot(range(1992, 2019), yearly_R, label='Cummulative events')
+    line1, = plt.plot(range(1992, 2019), yearly_R, label='Ground truth')
     # line2, = plt.plot(times[-time_size:], pred_R, label='Prediction')
     line3, = plt.plot(times[-time_size:], torch_R.detach().numpy(),
                       label='Prediction of torch version')
     plt.legend()
+    plt.ylabel('Number of cummulative events')
+    plt.xlabel('Year')
     plt.title('Optimization based method')
     plt.savefig('figs/optim_map.png', bbox_inches='tight', dpi=400)
     plt.show()

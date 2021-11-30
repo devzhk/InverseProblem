@@ -361,6 +361,7 @@ plt.xlabel("Time (Years)")
 plt.ylabel("R")
 plt.title("")
 plt.legend()
+plt.savefig('figs/particle_filer.png', bbox_inches='tight', dpi=400)
 plt.show()
 
 # %%
