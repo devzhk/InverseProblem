@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     truth = torch.tensor(yearly_R, dtype=torch.float64)
     time_size = 50
-    num_epoch = 1800
+    num_epoch = 3000
 
     times = np.arange(1956, 2019)
     pred_R = int_R(yearly_Ds[:, :, -time_size:],
@@ -30,6 +30,9 @@ if __name__ == '__main__':
     scaler = torch.tensor([1e-6, 1000, 1e-2, 1e-3])
     optimizer = Adam([theta], lr=0.02)
     criterion = nn.MSELoss()
+    # choice of criterion:
+    # Gaussian: MSELoss
+    # Laplacian: L1Loss
     pbar = tqdm(range(num_epoch), dynamic_ncols=True)
     for i in pbar:
         optimizer.zero_grad()
@@ -55,5 +58,5 @@ if __name__ == '__main__':
     plt.ylabel('Number of cummulative events')
     plt.xlabel('Year')
     plt.title('Optimization based method')
-    plt.savefig('figs/optim_map.png', bbox_inches='tight', dpi=400)
+    plt.savefig('figs/optiml2_map.png', bbox_inches='tight', dpi=400)
     plt.show()
